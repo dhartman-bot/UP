@@ -1074,6 +1074,362 @@
       .modal-title {
         font-size: 1.3em;
       }
+
+      .activity-feed {
+        display: none;
+      }
+
+      .cargo-legend {
+        display: none;
+      }
+
+      .comparison-toggle {
+        right: 24px;
+        top: 70px;
+      }
+    }
+
+    /* AI Decision Callouts */
+    .ai-decision {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: white;
+      font-size: 0.8em;
+      max-width: 280px;
+      z-index: 6;
+      animation: decisionAppear 0.5s ease, decisionFadeOut 0.5s ease 4.5s forwards;
+      box-shadow: 0 4px 20px rgba(253, 185, 19, 0.4);
+    }
+
+    .ai-decision::before {
+      content: '🤖';
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+
+    .ai-decision strong {
+      color: var(--accent);
+    }
+
+    @keyframes decisionAppear {
+      from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes decisionFadeOut {
+      to { opacity: 0; transform: translateY(-5px); }
+    }
+
+    /* Live Activity Feed */
+    .activity-feed {
+      position: absolute;
+      top: 90px;
+      right: 24px;
+      width: 320px;
+      max-height: calc(100vh - 360px);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .activity-feed-title {
+      font-size: 0.9em;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-feed-title::before {
+      content: '⚡';
+      font-size: 1.1em;
+    }
+
+    .activity-items {
+      max-height: calc(100vh - 440px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .activity-items::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .activity-items::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .activity-items::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    .activity-item {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      font-size: 0.75em;
+      color: rgba(255, 255, 255, 0.9);
+      animation: activitySlideIn 0.4s ease;
+    }
+
+    .activity-item.new {
+      background: rgba(253, 185, 19, 0.1);
+      animation: activityPulse 0.6s ease;
+    }
+
+    .activity-time {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9em;
+      margin-bottom: 4px;
+    }
+
+    .activity-action {
+      line-height: 1.5;
+    }
+
+    .activity-action .savings {
+      color: #4caf50;
+      font-weight: 600;
+    }
+
+    .activity-action .alert {
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    @keyframes activitySlideIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes activityPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Cargo Type Color Coding */
+    .fullscreen-train[data-cargo="intermodal"] {
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+      box-shadow: 0 0 20px #2196F3, 0 0 35px rgba(33, 150, 243, 0.5);
+    }
+
+    .fullscreen-train[data-cargo="coal"] {
+      background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+      box-shadow: 0 0 20px #5D4037, 0 0 35px rgba(93, 64, 55, 0.5);
+    }
+
+    .fullscreen-train[data-cargo="automotive"] {
+      background: linear-gradient(135deg, #F44336 0%, #C62828 100%);
+      box-shadow: 0 0 20px #F44336, 0 0 35px rgba(244, 67, 54, 0.5);
+    }
+
+    .fullscreen-train[data-cargo="grain"] {
+      background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+      box-shadow: 0 0 20px #FFC107, 0 0 35px rgba(255, 193, 7, 0.5);
+    }
+
+    .fullscreen-train[data-cargo="chemicals"] {
+      background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+      box-shadow: 0 0 20px #9C27B0, 0 0 35px rgba(156, 39, 176, 0.5);
+    }
+
+    .fullscreen-train[data-cargo="containers"] {
+      background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
+      box-shadow: 0 0 20px #00BCD4, 0 0 35px rgba(0, 188, 212, 0.5);
+    }
+
+    .fullscreen-train[data-cargo="petroleum"] {
+      background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+      box-shadow: 0 0 20px #FF5722, 0 0 35px rgba(255, 87, 34, 0.5);
+    }
+
+    .fullscreen-train[data-cargo="machinery"] {
+      background: linear-gradient(135deg, #607D8B 0%, #455A64 100%);
+      box-shadow: 0 0 20px #607D8B, 0 0 35px rgba(96, 125, 139, 0.5);
+    }
+
+    /* Geographic State Outlines */
+    .state-outlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.15;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .state-outlines path {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* Comparison Mode Toggle */
+    .comparison-toggle {
+      position: absolute;
+      top: 24px;
+      right: 360px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 5;
+    }
+
+    .comparison-toggle label {
+      font-size: 0.8em;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: var(--accent);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(24px);
+    }
+
+    .comparison-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(205, 0, 0, 0.15);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .comparison-overlay.active {
+      opacity: 1;
+    }
+
+    .comparison-label {
+      position: absolute;
+      top: 90px;
+      left: 24px;
+      font-size: 1.2em;
+      font-weight: 700;
+      color: var(--secondary);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 8px 16px;
+      border-radius: 6px;
+      z-index: 6;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .comparison-label.active {
+      opacity: 1;
+    }
+
+    /* Stats Panel Enhancement with Trends */
+    .stat-panel-trend {
+      font-size: 0.7em;
+      color: #4caf50;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .stat-panel-trend.down {
+      color: var(--secondary);
+    }
+
+    .stat-panel-baseline {
+      font-size: 0.65em;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+    }
+
+    /* Cargo Legend */
+    .cargo-legend {
+      position: absolute;
+      bottom: 110px;
+      right: 24px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px;
+      z-index: 5;
+    }
+
+    .cargo-legend-title {
+      font-size: 0.75em;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cargo-legend-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+
+    .cargo-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7em;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .cargo-legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
     }
 
     /* Incident Response Visual */
@@ -2152,43 +2508,129 @@
       <div class="fullscreen-route-path" style="left: 28%; top: 40%; width: 120px; transform: rotate(25deg);"></div>
       <div class="fullscreen-route-path" style="left: 55%; top: 22%; width: 140px; transform: rotate(15deg);"></div>
 
-      <!-- Animated Trains (10 visible trains) -->
-      <div class="fullscreen-train" data-train="UP-4872 | Intermodal | LA→Omaha" style="left: 45%; top: 40%; animation: fsTrainRoute1 12s ease-in-out infinite;"></div>
-      <div class="fullscreen-train" data-train="UP-7234 | Coal | Denver→KC" style="left: 30%; top: 32%; animation: fsTrainRoute2 10s ease-in-out infinite; animation-delay: 1s;"></div>
-      <div class="fullscreen-train" data-train="UP-5891 | Automotive | Phoenix→LA" style="left: 60%; top: 78%; animation: fsTrainRoute3 11s ease-in-out infinite; animation-delay: 2s;"></div>
-      <div class="fullscreen-train" data-train="UP-3421 | Grain | Omaha→El Paso" style="left: 18%; top: 42%; animation: fsTrainRoute4 13s ease-in-out infinite; animation-delay: 3s;"></div>
-      <div class="fullscreen-train" data-train="UP-9156 | Intermodal | SLC→LA" style="left: 70%; top: 38%; animation: fsTrainRoute5 9s ease-in-out infinite; animation-delay: 1.5s;"></div>
-      <div class="fullscreen-train" data-train="UP-6743 | Chemicals | LA→Denver" style="left: 72%; top: 60%; animation: fsTrainRoute6 14s ease-in-out infinite; animation-delay: 4s;"></div>
-      <div class="fullscreen-train" data-train="UP-2987 | Containers | El Paso→Phoenix" style="left: 48%; top: 76%; animation: fsTrainRoute7 8s ease-in-out infinite; animation-delay: 2.5s;"></div>
-      <div class="fullscreen-train" data-train="UP-8214 | Petroleum | Denver→Omaha" style="left: 38%; top: 28%; animation: fsTrainRoute8 10s ease-in-out infinite; animation-delay: 5s;"></div>
-      <div class="fullscreen-train" data-train="UP-1563 | Machinery | KC→Pueblo" style="left: 22%; top: 54%; animation: fsTrainRoute9 11s ease-in-out infinite; animation-delay: 3.5s;"></div>
-      <div class="fullscreen-train" data-train="UP-4029 | Intermodal | Omaha→LA" style="left: 14%; top: 38%; animation: fsTrainRoute10 16s ease-in-out infinite; animation-delay: 6s;"></div>
+      <!-- Animated Trains (10 visible trains with cargo type color coding) -->
+      <div class="fullscreen-train" data-train="UP-4872 | Intermodal | LA→Omaha" data-cargo="intermodal" style="left: 45%; top: 40%; animation: fsTrainRoute1 12s ease-in-out infinite;"></div>
+      <div class="fullscreen-train" data-train="UP-7234 | Coal | Denver→KC" data-cargo="coal" style="left: 30%; top: 32%; animation: fsTrainRoute2 10s ease-in-out infinite; animation-delay: 1s;"></div>
+      <div class="fullscreen-train" data-train="UP-5891 | Automotive | Phoenix→LA" data-cargo="automotive" style="left: 60%; top: 78%; animation: fsTrainRoute3 11s ease-in-out infinite; animation-delay: 2s;"></div>
+      <div class="fullscreen-train" data-train="UP-3421 | Grain | Omaha→El Paso" data-cargo="grain" style="left: 18%; top: 42%; animation: fsTrainRoute4 13s ease-in-out infinite; animation-delay: 3s;"></div>
+      <div class="fullscreen-train" data-train="UP-9156 | Intermodal | SLC→LA" data-cargo="intermodal" style="left: 70%; top: 38%; animation: fsTrainRoute5 9s ease-in-out infinite; animation-delay: 1.5s;"></div>
+      <div class="fullscreen-train" data-train="UP-6743 | Chemicals | LA→Denver" data-cargo="chemicals" style="left: 72%; top: 60%; animation: fsTrainRoute6 14s ease-in-out infinite; animation-delay: 4s;"></div>
+      <div class="fullscreen-train" data-train="UP-2987 | Containers | El Paso→Phoenix" data-cargo="containers" style="left: 48%; top: 76%; animation: fsTrainRoute7 8s ease-in-out infinite; animation-delay: 2.5s;"></div>
+      <div class="fullscreen-train" data-train="UP-8214 | Petroleum | Denver→Omaha" data-cargo="petroleum" style="left: 38%; top: 28%; animation: fsTrainRoute8 10s ease-in-out infinite; animation-delay: 5s;"></div>
+      <div class="fullscreen-train" data-train="UP-1563 | Machinery | KC→Pueblo" data-cargo="machinery" style="left: 22%; top: 54%; animation: fsTrainRoute9 11s ease-in-out infinite; animation-delay: 3.5s;"></div>
+      <div class="fullscreen-train" data-train="UP-4029 | Intermodal | Omaha→LA" data-cargo="intermodal" style="left: 14%; top: 38%; animation: fsTrainRoute10 16s ease-in-out infinite; animation-delay: 6s;"></div>
 
-      <!-- Stats Panel -->
+      <!-- Comparison Mode Toggle -->
+      <div class="comparison-toggle">
+        <label onclick="toggleComparison()">Before/After AI</label>
+        <div class="toggle-switch" id="comparisonToggle" onclick="toggleComparison()"></div>
+      </div>
+
+      <!-- Comparison Overlay & Label -->
+      <div class="comparison-overlay" id="comparisonOverlay"></div>
+      <div class="comparison-label" id="comparisonLabel">❌ WITHOUT AI: 87% on-time • 34mph avg • $8M daily costs</div>
+
+      <!-- Live Activity Feed -->
+      <div class="activity-feed">
+        <div class="activity-feed-title">Live AI Decisions</div>
+        <div class="activity-items" id="activityItems">
+          <div class="activity-item">
+            <div class="activity-time">14:47:23</div>
+            <div class="activity-action">Rerouted UP-7234 via Cheyenne - <span class="savings">saves 47 min</span></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:46:55</div>
+            <div class="activity-action"><span class="alert">Weather alert:</span> Snow in Denver - adjusted 5 train speeds</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:46:12</div>
+            <div class="activity-action">Priority given to UP-4872 intermodal - <span class="savings">customer deadline in 4h</span></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:45:38</div>
+            <div class="activity-action">Fuel-efficient routing for UP-6743 - <span class="savings">saves $2,340</span></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:45:01</div>
+            <div class="activity-action">Detected track maintenance MP 347 - rerouted 3 trains</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:44:29</div>
+            <div class="activity-action">Crew optimization: Reduced deadhead by <span class="savings">40 miles</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cargo Legend -->
+      <div class="cargo-legend">
+        <div class="cargo-legend-title">Cargo Types</div>
+        <div class="cargo-legend-items">
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #2196F3;"></div>
+            <span>Intermodal</span>
+          </div>
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #5D4037;"></div>
+            <span>Coal</span>
+          </div>
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #F44336;"></div>
+            <span>Automotive</span>
+          </div>
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #FFC107;"></div>
+            <span>Grain</span>
+          </div>
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #9C27B0;"></div>
+            <span>Chemicals</span>
+          </div>
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #00BCD4;"></div>
+            <span>Containers</span>
+          </div>
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #FF5722;"></div>
+            <span>Petroleum</span>
+          </div>
+          <div class="cargo-legend-item">
+            <div class="cargo-legend-color" style="background: #607D8B;"></div>
+            <span>Machinery</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Panel with Trends -->
       <div class="network-stats-panel">
         <div class="stat-panel-item">
           <div class="stat-panel-value">47</div>
           <div class="stat-panel-label">Active Trains</div>
+          <div class="stat-panel-trend">↑ 8% vs baseline</div>
         </div>
         <div class="stat-panel-item">
           <div class="stat-panel-value">38.2</div>
           <div class="stat-panel-label">Avg Speed (mph)</div>
+          <div class="stat-panel-trend">↑ 12% from 34mph</div>
         </div>
         <div class="stat-panel-item">
           <div class="stat-panel-value">94%</div>
           <div class="stat-panel-label">On-Time Rate</div>
+          <div class="stat-panel-trend">↑ from 87% baseline</div>
         </div>
         <div class="stat-panel-item">
           <div class="stat-panel-value">$2.4M</div>
           <div class="stat-panel-label">Fuel Savings Today</div>
+          <div class="stat-panel-trend">↑ $18M annual</div>
         </div>
         <div class="stat-panel-item">
           <div class="stat-panel-value">12.3%</div>
           <div class="stat-panel-label">Network Velocity ↑</div>
+          <div class="stat-panel-trend">vs pre-AI baseline</div>
         </div>
         <div class="stat-panel-item">
           <div class="stat-panel-value">99.99%</div>
           <div class="stat-panel-label">Safety Score</div>
+          <div class="stat-panel-trend">Target maintained</div>
         </div>
       </div>
     </div>
@@ -2309,6 +2751,137 @@
         closeNetworkModal();
       }
     });
+
+    // Comparison Mode Toggle
+    let comparisonMode = false;
+    function toggleComparison() {
+      comparisonMode = !comparisonMode;
+      document.getElementById('comparisonToggle').classList.toggle('active');
+      document.getElementById('comparisonOverlay').classList.toggle('active');
+      document.getElementById('comparisonLabel').classList.toggle('active');
+    }
+
+    // AI Decision Callouts
+    const aiDecisions = [
+      { text: "Rerouting <strong>UP-7234</strong> via Cheyenne - saves <strong>47 minutes</strong>", x: "30%", y: "32%" },
+      { text: "Priority lane for <strong>UP-4872</strong> - customer deadline in <strong>4 hours</strong>", x: "45%", y: "40%" },
+      { text: "Fuel-efficient route for <strong>UP-6743</strong> - saves <strong>$2,340</strong>", x: "72%", y: "60%" },
+      { text: "Weather reroute: <strong>5 trains</strong> diverted around Denver storm", x: "42%", y: "25%" },
+      { text: "Crew optimization: Reduced deadhead by <strong>40 miles</strong>", x: "20%", y: "52%" },
+      { text: "Track maintenance detected at <strong>MP 347</strong> - 3 trains rerouted", x: "35%", y: "50%" },
+      { text: "Optimal speed adjustment for <strong>UP-5891</strong> - improves ETA by <strong>23min</strong>", x: "60%", y: "78%" },
+      { text: "Priority scheduling: <strong>UP-9156</strong> intermodal gets fast lane", x: "70%", y: "38%" }
+    ];
+
+    let decisionIndex = 0;
+    function showAIDecision() {
+      if (!document.getElementById('networkModal').classList.contains('active')) return;
+
+      const decision = aiDecisions[decisionIndex];
+      decisionIndex = (decisionIndex + 1) % aiDecisions.length;
+
+      const callout = document.createElement('div');
+      callout.className = 'ai-decision';
+      callout.innerHTML = decision.text;
+      callout.style.left = decision.x;
+      callout.style.top = decision.y;
+
+      document.querySelector('.fullscreen-network').appendChild(callout);
+
+      setTimeout(() => {
+        if (callout.parentNode) {
+          callout.parentNode.removeChild(callout);
+        }
+      }, 5000);
+    }
+
+    // Show AI decisions periodically when modal is open
+    let decisionInterval;
+    function startAIDecisions() {
+      decisionInterval = setInterval(showAIDecision, 6000);
+      setTimeout(showAIDecision, 1000); // Show first one quickly
+    }
+
+    function stopAIDecisions() {
+      if (decisionInterval) {
+        clearInterval(decisionInterval);
+      }
+    }
+
+    // Override modal functions to control AI decisions
+    const originalOpenModal = openNetworkModal;
+    openNetworkModal = function() {
+      originalOpenModal();
+      startAIDecisions();
+      startActivityFeed();
+    };
+
+    const originalCloseModal = closeNetworkModal;
+    closeNetworkModal = function() {
+      originalCloseModal();
+      stopAIDecisions();
+      stopActivityFeed();
+    };
+
+    // Live Activity Feed Updates
+    const activityUpdates = [
+      { time: "TIME", action: "Rerouted UP-7234 via Cheyenne - <span class='savings'>saves 47 min</span>" },
+      { time: "TIME", action: "<span class='alert'>Weather alert:</span> Snow in Denver - adjusted 5 train speeds" },
+      { time: "TIME", action: "Priority given to UP-4872 intermodal - <span class='savings'>customer deadline in 4h</span>" },
+      { time: "TIME", action: "Fuel-efficient routing for UP-6743 - <span class='savings'>saves $2,340</span>" },
+      { time: "TIME", action: "Detected track maintenance MP 347 - rerouted 3 trains" },
+      { time: "TIME", action: "Crew optimization: Reduced deadhead by <span class='savings'>40 miles</span>" },
+      { time: "TIME", action: "Optimal speed for UP-5891 - <span class='savings'>improves ETA 23min</span>" },
+      { time: "TIME", action: "<span class='alert'>Congestion alert:</span> Kansas City yard - diverted 2 trains" },
+      { time: "TIME", action: "Dynamic pricing: UP-9156 gets priority lane - <span class='savings'>$5k premium</span>" },
+      { time: "TIME", action: "Predictive maintenance: UP-3421 flagged for inspection" }
+    ];
+
+    let activityIndex = 0;
+    let activityInterval;
+
+    function getFormattedTime() {
+      const now = new Date();
+      return now.toTimeString().split(' ')[0];
+    }
+
+    function addActivityItem() {
+      if (!document.getElementById('networkModal').classList.contains('active')) return;
+
+      const activity = activityUpdates[activityIndex];
+      activityIndex = (activityIndex + 1) % activityUpdates.length;
+
+      const item = document.createElement('div');
+      item.className = 'activity-item new';
+      item.innerHTML = `
+        <div class="activity-time">${getFormattedTime()}</div>
+        <div class="activity-action">${activity.action}</div>
+      `;
+
+      const container = document.getElementById('activityItems');
+      container.insertBefore(item, container.firstChild);
+
+      // Remove 'new' class after animation
+      setTimeout(() => {
+        item.classList.remove('new');
+      }, 600);
+
+      // Keep only last 8 items
+      while (container.children.length > 8) {
+        container.removeChild(container.lastChild);
+      }
+    }
+
+    function startActivityFeed() {
+      activityInterval = setInterval(addActivityItem, 8000);
+      setTimeout(addActivityItem, 2000); // Add first one quickly
+    }
+
+    function stopActivityFeed() {
+      if (activityInterval) {
+        clearInterval(activityInterval);
+      }
+    }
 
     // Get brand colors from CSS variables
     const brandColors = {
