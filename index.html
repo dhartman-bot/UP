@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude AI for Union Pacific</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #00339A;
+      --secondary: #CD0000;
+      --accent: #FDB913;
+      --text-dark: #212121;
+      --text-medium: #696969;
+      --gray-light: #fafafa;
+      --gray-border: #e1e8ed;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-dark);
+      line-height: 1.6;
+      background: #ffffff;
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+    }
+
+    .tab-buttons {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      gap: 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 20px 24px;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.05em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .tab-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border-bottom-color: var(--accent);
+    }
+
+    /* Content Sections */
+    .tab-content {
+      display: none;
+      padding: 64px 48px;
+      max-width: 1400px;
+      margin: 0 auto;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 3em;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    h2 {
+      font-size: 2.2em;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+      margin-bottom: 32px;
+      margin-top: 48px;
+    }
+
+    h2:first-child {
+      margin-top: 0;
+    }
+
+    h3 {
+      font-size: 1.6em;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      margin-top: 32px;
+    }
+
+    p {
+      font-size: 1.05em;
+      line-height: 1.8;
+      color: var(--text-medium);
+      margin-bottom: 16px;
+    }
+
+    /* Stat Grid */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin: 48px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 32px;
+      border-radius: 12px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 51, 154, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .stat-card:nth-child(2n) {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 2.8em;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 1.1em;
+      opacity: 0.95;
+      font-weight: 500;
+    }
+
+    /* Use Case Grid */
+    .use-case-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin: 32px 0;
+    }
+
+    .use-case {
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .use-case:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      border-left-color: var(--accent);
+    }
+
+    .use-case h4 {
+      font-size: 1.3em;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+
+    .use-case p {
+      margin-bottom: 0;
+    }
+
+    /* Feature Box */
+    .feature-box {
+      background: var(--gray-light);
+      border-left: 4px solid var(--primary);
+      padding: 24px 32px;
+      margin: 32px 0;
+      border-radius: 8px;
+    }
+
+    .feature-box.highlight {
+      background: linear-gradient(135deg, rgba(253, 185, 19, 0.1), rgba(0, 51, 154, 0.05));
+      border-left-color: var(--accent);
+    }
+
+    .feature-box h4 {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .feature-box p {
+      margin-bottom: 8px;
+    }
+
+    .feature-box ul {
+      margin-left: 24px;
+      margin-top: 12px;
+    }
+
+    .feature-box li {
+      font-size: 1.05em;
+      line-height: 1.8;
+      color: var(--text-medium);
+      margin-bottom: 8px;
+    }
+
+    /* Interactive Flow */
+    .interactive-flow {
+      display: grid;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .flow-step {
+      background: white;
+      padding: 24px 32px;
+      border-radius: 12px;
+      border-left: 4px solid var(--gray-border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .flow-step:hover {
+      transform: translateX(8px);
+      border-left-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .flow-step.active {
+      border-left-color: var(--accent);
+      background: linear-gradient(135deg, rgba(253, 185, 19, 0.05), rgba(0, 51, 154, 0.02));
+    }
+
+    .flow-step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 1.2em;
+      flex-shrink: 0;
+    }
+
+    .flow-step-content {
+      flex: 1;
+    }
+
+    .flow-step strong {
+      display: block;
+      font-size: 1.2em;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .flow-step p {
+      margin-bottom: 0;
+    }
+
+    /* Timeline */
+    .timeline {
+      margin: 48px 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 79px;
+      top: 80px;
+      width: 2px;
+      height: calc(100% + 16px);
+      background: var(--gray-border);
+    }
+
+    .timeline-marker {
+      flex-shrink: 0;
+      width: 160px;
+      height: 160px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.3em;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 51, 154, 0.3);
+      z-index: 1;
+    }
+
+    .timeline-content {
+      flex: 1;
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid var(--accent);
+    }
+
+    .timeline-content h3 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    .timeline-content ul {
+      margin-left: 24px;
+      margin-top: 16px;
+    }
+
+    .timeline-content li {
+      font-size: 1.05em;
+      line-height: 1.8;
+      color: var(--text-medium);
+      margin-bottom: 8px;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      margin: 48px 0;
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 400px;
+      margin-top: 24px;
+    }
+
+    /* CTA Button */
+    .cta-button {
+      display: inline-block;
+      padding: 16px 48px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      font-size: 1.1em;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 32px;
+      box-shadow: 0 4px 12px rgba(0, 51, 154, 0.3);
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 51, 154, 0.4);
+    }
+
+    /* Logo Section */
+    .header-logos {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--gray-border);
+    }
+
+    .logo-text {
+      font-size: 2.5em;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .anthropic-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, rgba(0, 51, 154, 0.1), rgba(205, 0, 0, 0.1));
+      border-radius: 8px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* Visual Mockups for Agent Use Cases */
+    .visual-mockup {
+      margin-top: 24px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      border: 2px solid var(--gray-border);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-border);
+    }
+
+    .dashboard-title {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dashboard-time {
+      font-size: 0.8em;
+      color: var(--text-medium);
+      font-family: monospace;
+    }
+
+    /* Predictive Maintenance Visual */
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .sensor-reading {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid var(--primary);
+    }
+
+    .sensor-reading.warning {
+      border-left-color: var(--accent);
+      background: rgba(253, 185, 19, 0.05);
+    }
+
+    .sensor-reading.critical {
+      border-left-color: var(--secondary);
+      background: rgba(205, 0, 0, 0.05);
+    }
+
+    .sensor-label {
+      font-size: 0.75em;
+      color: var(--text-medium);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .sensor-value {
+      font-size: 1.4em;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .sensor-status {
+      font-size: 0.7em;
+      font-weight: 600;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .sensor-status.normal {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .sensor-status.warning {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .sensor-status.critical {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .alert-banner {
+      background: linear-gradient(135deg, var(--secondary), #e03c31);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.85em;
+      font-weight: 600;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert-banner.warning {
+      background: linear-gradient(135deg, var(--accent), #ffa000);
+    }
+
+    /* Safety Inspection Visual */
+    .track-visualization {
+      background: white;
+      border-radius: 6px;
+      padding: 16px;
+      position: relative;
+      height: 120px;
+      overflow: hidden;
+    }
+
+    .track-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg,
+        #424242 0%, #424242 48%,
+        transparent 48%, transparent 52%,
+        #424242 52%, #424242 100%);
+      background-size: 40px 100%;
+      transform: translateY(-50%);
+    }
+
+    .defect-marker {
+      position: absolute;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 3px solid white;
+      transform: translate(-50%, -50%);
+      animation: pulse 2s infinite;
+    }
+
+    .defect-marker.high {
+      background: var(--secondary);
+      left: 25%;
+    }
+
+    .defect-marker.medium {
+      background: var(--accent);
+      left: 60%;
+    }
+
+    .defect-marker.low {
+      background: #4caf50;
+      left: 85%;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
+    }
+
+    .defect-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      font-size: 0.75em;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Route Optimization Visual */
+    .network-map {
+      background: linear-gradient(135deg, #0a1929 0%, #1a237e 50%, #0d47a1 100%);
+      border-radius: 6px;
+      padding: 20px;
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .network-map::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(253, 185, 19, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(253, 185, 19, 0.03) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .route-node {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 25px rgba(253, 185, 19, 0.3);
+      z-index: 2;
+    }
+
+    .route-node.major {
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      box-shadow: 0 0 20px rgba(253, 185, 19, 0.8), 0 0 30px rgba(253, 185, 19, 0.4);
+    }
+
+    .route-node::after {
+      content: attr(data-city);
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65em;
+      color: rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .route-path {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg,
+        rgba(253, 185, 19, 0.3) 0%,
+        rgba(253, 185, 19, 0.6) 50%,
+        rgba(253, 185, 19, 0.3) 100%);
+      box-shadow: 0 0 10px rgba(253, 185, 19, 0.4);
+      transform-origin: left center;
+      z-index: 1;
+    }
+
+    .route-path.active {
+      background: linear-gradient(90deg,
+        rgba(253, 185, 19, 0.6) 0%,
+        var(--accent) 50%,
+        rgba(253, 185, 19, 0.6) 100%);
+      box-shadow: 0 0 15px var(--accent);
+      animation: pathPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pathPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    .train-marker {
+      position: absolute;
+      width: 28px;
+      height: 18px;
+      background: linear-gradient(135deg, var(--accent) 0%, #ffa000 100%);
+      border-radius: 4px;
+      box-shadow: 0 0 15px var(--accent), 0 0 25px rgba(253, 185, 19, 0.5);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6em;
+      color: #0a1929;
+      font-weight: 700;
+    }
+
+    .train-marker::before {
+      content: '▶';
+      font-size: 0.7em;
+    }
+
+    .train-marker.train1 {
+      animation: moveRoute1 6s ease-in-out infinite;
+    }
+
+    .train-marker.train2 {
+      animation: moveRoute2 8s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+
+    .train-marker.train3 {
+      animation: moveRoute3 7s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+
+    @keyframes moveRoute1 {
+      0% { left: 8%; top: 50%; }
+      50% { left: 45%; top: 25%; }
+      100% { left: 8%; top: 50%; }
+    }
+
+    @keyframes moveRoute2 {
+      0% { left: 48%; top: 28%; }
+      50% { left: 85%; top: 55%; }
+      100% { left: 48%; top: 28%; }
+    }
+
+    @keyframes moveRoute3 {
+      0% { left: 85%; top: 52%; }
+      50% { left: 48%; top: 75%; }
+      100% { left: 85%; top: 52%; }
+    }
+
+    .route-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .route-stat {
+      background: white;
+      padding: 8px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .route-stat-value {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .route-stat-label {
+      font-size: 0.7em;
+      color: var(--text-medium);
+    }
+
+    .network-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.7em;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 4;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #4caf50;
+      border-radius: 50%;
+      animation: statusPulse 2s infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px #4caf50; }
+      50% { opacity: 0.5; box-shadow: 0 0 15px #4caf50; }
+    }
+
+    /* Incident Response Visual */
+    .incident-timeline {
+      background: white;
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .incident-step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .incident-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 28px;
+      width: 2px;
+      height: calc(100% - 16px);
+      background: var(--gray-border);
+    }
+
+    .incident-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7em;
+      font-weight: 700;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .incident-icon.detected {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .incident-icon.responding {
+      background: var(--accent);
+      color: white;
+    }
+
+    .incident-icon.resolved {
+      background: #4caf50;
+      color: white;
+    }
+
+    .incident-detail {
+      flex: 1;
+      font-size: 0.75em;
+    }
+
+    .incident-time {
+      color: var(--text-medium);
+      font-size: 0.9em;
+      margin-bottom: 2px;
+    }
+
+    .incident-action {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* Crew Scheduling Visual */
+    .crew-schedule {
+      background: white;
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .crew-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .crew-name {
+      width: 80px;
+      font-size: 0.75em;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .crew-timeline {
+      flex: 1;
+      display: flex;
+      gap: 2px;
+      height: 24px;
+    }
+
+    .crew-block {
+      flex: 1;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65em;
+      color: white;
+      font-weight: 600;
+    }
+
+    .crew-block.assigned {
+      background: var(--primary);
+    }
+
+    .crew-block.transit {
+      background: var(--accent);
+    }
+
+    .crew-block.rest {
+      background: #9e9e9e;
+    }
+
+    .crew-block.available {
+      background: #4caf50;
+    }
+
+    .schedule-legend {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 0.7em;
+      flex-wrap: wrap;
+    }
+
+    /* Customer Service Visual */
+    .chat-interface {
+      background: white;
+      border-radius: 6px;
+      padding: 12px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .chat-message {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-message.customer {
+      justify-content: flex-end;
+    }
+
+    .chat-bubble {
+      max-width: 70%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.75em;
+      line-height: 1.4;
+    }
+
+    .chat-message.agent .chat-bubble {
+      background: var(--primary);
+      color: white;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-message.customer .chat-bubble {
+      background: #f0f0f0;
+      color: var(--text-dark);
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7em;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .chat-message.agent .chat-avatar {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .chat-message.customer .chat-avatar {
+      background: #e0e0e0;
+      color: var(--text-dark);
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px;
+      background: var(--primary);
+      border-radius: 12px;
+      width: fit-content;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-4px); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .use-case-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sensor-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .route-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .network-map {
+        height: 180px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .tab-buttons {
+        flex-direction: column;
+      }
+
+      .tab-btn {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 3px solid transparent;
+      }
+
+      .tab-btn.active {
+        border-left-color: var(--accent);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .tab-content {
+        padding: 32px 24px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      h2 {
+        font-size: 1.6em;
+      }
+
+      .header-logos {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+      }
+
+      .timeline-item {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .timeline-item::after {
+        display: none;
+      }
+
+      .timeline-marker {
+        width: 120px;
+        height: 120px;
+        font-size: 1.1em;
+      }
+
+      .chart-wrapper {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Tab Navigation -->
+  <nav class="tab-nav">
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="overview">Overview</button>
+      <button class="tab-btn" data-tab="agents">Agent Use Cases</button>
+      <button class="tab-btn" data-tab="claude-code">Claude Code</button>
+      <button class="tab-btn" data-tab="roi">ROI & Timeline</button>
+    </div>
+  </nav>
+
+  <!-- Overview Tab -->
+  <div class="tab-content active" id="overview">
+    <div class="header-logos">
+      <div class="logo-text">UNION PACIFIC</div>
+      <div class="anthropic-badge">Powered by Claude Sonnet 4.5</div>
+    </div>
+
+    <h1>Transforming America's Freight Railroad with AI</h1>
+    <p style="font-size: 1.2em; color: var(--text-dark); margin-bottom: 48px;">
+      Union Pacific moves America forward, serving 23 western states across 32,000 miles of track.
+      With Claude AI, transform rail operations through intelligent automation, predictive insights,
+      and operational excellence at scale.
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <span class="stat-number">45%</span>
+        <span class="stat-label">Maintenance Cost Reduction</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">35M+</span>
+        <span class="stat-label">Daily Sensor Readings Analyzed</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">99.99%</span>
+        <span class="stat-label">Safety & Reliability Target</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">$120M+</span>
+        <span class="stat-label">Annual Cost Savings Potential</span>
+      </div>
+    </div>
+
+    <h2>Strategic Priorities for Union Pacific</h2>
+    <div class="use-case-grid">
+      <div class="use-case">
+        <h4>🛤️ Infrastructure Resilience</h4>
+        <p>Maintain 32,000 miles of track with predictive maintenance and real-time monitoring. AI agents process millions of wayside detector readings to predict failures before they impact operations.</p>
+      </div>
+      <div class="use-case">
+        <h4>⚡ Operational Excellence</h4>
+        <p>Optimize network velocity, reduce dwell time, and improve asset utilization. Claude analyzes historical patterns and real-time data to recommend operational improvements.</p>
+      </div>
+      <div class="use-case">
+        <h4>🔒 Safety Leadership</h4>
+        <p>Maintain industry-leading safety standards with automated inspection systems, hazmat monitoring, and compliance verification. Achieve 99.99% derailment-free operations.</p>
+      </div>
+      <div class="use-case">
+        <h4>💰 Cost Optimization</h4>
+        <p>Maximize efficiency from your $10M daily infrastructure investment. AI-driven insights identify opportunities to reduce fuel consumption, optimize crew scheduling, and minimize equipment downtime.</p>
+      </div>
+      <div class="use-case">
+        <h4>🌱 Sustainability & ESG</h4>
+        <p>Reduce carbon emissions through route optimization, fuel efficiency improvements, and strategic locomotive deployment. Meet sustainability commitments while maintaining service excellence.</p>
+      </div>
+      <div class="use-case">
+        <h4>📊 Customer Service Excellence</h4>
+        <p>Provide real-time shipment visibility, proactive delay notifications, and intelligent customer support. Serve 7,300 communities with transparent, responsive communication.</p>
+      </div>
+    </div>
+
+    <h2>Why Claude for Union Pacific?</h2>
+    <div class="feature-box highlight">
+      <h4>🚀 Built for Rail Industry Complexity</h4>
+      <p>Claude excels at processing complex operational data, regulatory requirements, and multi-system integration—perfect for the demands of Class I freight operations.</p>
+      <ul>
+        <li><strong>200K Token Context Window:</strong> Process entire shift reports, inspection logs, and operational data in a single analysis</li>
+        <li><strong>Real-Time Decision Making:</strong> Analyze sensor data streams and recommend immediate actions to prevent equipment failures</li>
+        <li><strong>Regulatory Compliance:</strong> Ensure FRA, DOT, and EPA compliance across all operations with automated verification</li>
+        <li><strong>Enterprise Security:</strong> SOC 2 Type II certified with data sovereignty options for sensitive operational information</li>
+      </ul>
+    </div>
+
+    <button class="cta-button" onclick="switchTab('agents')">Explore AI Agent Use Cases →</button>
+  </div>
+
+  <!-- Agent Use Cases Tab -->
+  <div class="tab-content" id="agents">
+    <h1>AI Agents for Rail Operations</h1>
+    <p style="font-size: 1.2em; color: var(--text-dark); margin-bottom: 48px;">
+      Deploy specialized AI agents to automate critical rail operations, from predictive maintenance
+      to customer service. Each agent operates autonomously while integrating seamlessly with your
+      existing systems.
+    </p>
+
+    <h2>Core Rail Operations Use Cases</h2>
+    <div class="use-case-grid">
+      <div class="use-case">
+        <h4>🔧 Predictive Maintenance Agent</h4>
+        <p><strong>Challenge:</strong> Manual inspection of thousands of railcars and locomotives leads to unexpected failures and costly downtime.</p>
+        <p><strong>Solution:</strong> Claude analyzes 35M+ daily wayside detector readings, vibration sensors, thermal imaging, and maintenance logs to predict component failures 2-4 weeks in advance.</p>
+        <p><strong>Impact:</strong> 45% reduction in unplanned maintenance, 30% decrease in equipment downtime, $50M+ annual savings.</p>
+
+        <div class="visual-mockup">
+          <div class="dashboard-header">
+            <div class="dashboard-title">Predictive Maintenance Dashboard</div>
+            <div class="dashboard-time">Updated: 2 min ago</div>
+          </div>
+          <div class="sensor-grid">
+            <div class="sensor-reading">
+              <div class="sensor-label">Bearing Temperature</div>
+              <div class="sensor-value">158°F</div>
+              <span class="sensor-status normal">NORMAL</span>
+            </div>
+            <div class="sensor-reading warning">
+              <div class="sensor-label">Wheel Impact Load</div>
+              <div class="sensor-value">32.4 kips</div>
+              <span class="sensor-status warning">ELEVATED</span>
+            </div>
+            <div class="sensor-reading">
+              <div class="sensor-label">Vibration Level</div>
+              <div class="sensor-value">2.1 g</div>
+              <span class="sensor-status normal">NORMAL</span>
+            </div>
+            <div class="sensor-reading critical">
+              <div class="sensor-label">Hot Box Detector</div>
+              <div class="sensor-value">215°F</div>
+              <span class="sensor-status critical">CRITICAL</span>
+            </div>
+          </div>
+          <div class="alert-banner">
+            ⚠️ ALERT: Locomotive #4872 - Predicted bearing failure in 12-16 days. Recommend inspection at next scheduled stop.
+          </div>
+        </div>
+      </div>
+
+      <div class="use-case">
+        <h4>🛡️ Safety Inspection Automation</h4>
+        <p><strong>Challenge:</strong> Track inspections require significant manual effort, with potential for human error in identifying defects.</p>
+        <p><strong>Solution:</strong> AI agents process track geometry data, ultrasonic testing results, and visual inspection images to automatically identify and prioritize track defects.</p>
+        <p><strong>Impact:</strong> 99.99% defect detection accuracy, 60% faster inspection cycles, improved safety compliance.</p>
+
+        <div class="visual-mockup">
+          <div class="dashboard-header">
+            <div class="dashboard-title">Track Inspection Monitor - Mile 847.3 to 952.8</div>
+            <div class="dashboard-time">Live</div>
+          </div>
+          <div class="track-visualization">
+            <div class="track-line"></div>
+            <div class="defect-marker high" title="High Priority: Gauge Deviation"></div>
+            <div class="defect-marker medium" title="Medium Priority: Surface Wear"></div>
+            <div class="defect-marker low" title="Low Priority: Ballast Settlement"></div>
+          </div>
+          <div class="defect-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--secondary);"></div>
+              <span>High Priority (3)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--accent);"></div>
+              <span>Medium Priority (7)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #4caf50;"></div>
+              <span>Low Priority (12)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="use-case">
+        <h4>📍 Route & Traffic Optimization</h4>
+        <p><strong>Challenge:</strong> Complex network with competing priorities—balancing speed, fuel efficiency, track capacity, and customer commitments.</p>
+        <p><strong>Solution:</strong> Claude analyzes historical traffic patterns, weather forecasts, track conditions, and customer schedules to recommend optimal routing and prioritization.</p>
+        <p><strong>Impact:</strong> 12% improvement in network velocity, 8% reduction in fuel consumption, improved on-time performance.</p>
+
+        <div class="visual-mockup">
+          <div class="dashboard-header">
+            <div class="dashboard-title">Network Optimization - Western Region</div>
+            <div class="dashboard-time">Real-time</div>
+          </div>
+          <div class="network-map">
+            <div class="network-overlay">
+              <div class="status-dot"></div>
+              <span>All Systems Optimal</span>
+            </div>
+
+            <!-- Major terminals -->
+            <div class="route-node major" style="left: 8%; top: 50%;" data-city="Omaha"></div>
+            <div class="route-node major" style="left: 48%; top: 28%;" data-city="Denver"></div>
+            <div class="route-node major" style="left: 85%; top: 52%;" data-city="LA"></div>
+            <div class="route-node major" style="left: 48%; top: 72%;" data-city="Phoenix"></div>
+
+            <!-- Secondary nodes -->
+            <div class="route-node" style="left: 28%; top: 38%;"></div>
+            <div class="route-node" style="left: 38%; top: 18%;"></div>
+            <div class="route-node" style="left: 68%; top: 35%;"></div>
+            <div class="route-node" style="left: 78%; top: 68%;"></div>
+            <div class="route-node" style="left: 62%; top: 58%;"></div>
+            <div class="route-node" style="left: 18%; top: 62%;"></div>
+
+            <!-- Primary routes (active) -->
+            <div class="route-path active" style="left: 8%; top: 50%; width: 260px; transform: rotate(-8deg);"></div>
+            <div class="route-path active" style="left: 48%; top: 28%; width: 280px; transform: rotate(15deg);"></div>
+            <div class="route-path active" style="left: 48%; top: 72%; width: 280px; transform: rotate(-12deg);"></div>
+
+            <!-- Secondary routes -->
+            <div class="route-path" style="left: 28%; top: 38%; width: 140px; transform: rotate(-25deg);"></div>
+            <div class="route-path" style="left: 48%; top: 28%; width: 140px; transform: rotate(50deg);"></div>
+            <div class="route-path" style="left: 68%; top: 35%; width: 120px; transform: rotate(25deg);"></div>
+            <div class="route-path" style="left: 62%; top: 58%; width: 140px; transform: rotate(20deg);"></div>
+            <div class="route-path" style="left: 8%; top: 50%; width: 90px; transform: rotate(30deg);"></div>
+
+            <!-- Moving trains -->
+            <div class="train-marker train1"></div>
+            <div class="train-marker train2"></div>
+            <div class="train-marker train3"></div>
+          </div>
+          <div class="route-stats">
+            <div class="route-stat">
+              <div class="route-stat-value">47</div>
+              <div class="route-stat-label">Active Trains</div>
+            </div>
+            <div class="route-stat">
+              <div class="route-stat-value">38 mph</div>
+              <div class="route-stat-label">Avg Speed</div>
+            </div>
+            <div class="route-stat">
+              <div class="route-stat-value">94%</div>
+              <div class="route-stat-label">On-Time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="use-case">
+        <h4>🚨 Incident Response Coordination</h4>
+        <p><strong>Challenge:</strong> Equipment failures, weather events, and track obstructions require rapid coordination across multiple teams and systems.</p>
+        <p><strong>Solution:</strong> AI agents automatically detect incidents, assess impact, coordinate response teams, and provide real-time updates to affected customers.</p>
+        <p><strong>Impact:</strong> 40% faster incident resolution, improved customer satisfaction, reduced operational disruption.</p>
+
+        <div class="visual-mockup">
+          <div class="dashboard-header">
+            <div class="dashboard-title">Incident #IR-2847: Track Obstruction</div>
+            <div class="dashboard-time">In Progress</div>
+          </div>
+          <div class="incident-timeline">
+            <div class="incident-step">
+              <div class="incident-icon detected">!</div>
+              <div class="incident-detail">
+                <div class="incident-time">14:23 UTC</div>
+                <div class="incident-action">Incident Detected - Track obstruction at MP 347.2</div>
+              </div>
+            </div>
+            <div class="incident-step">
+              <div class="incident-icon responding">⚡</div>
+              <div class="incident-detail">
+                <div class="incident-time">14:24 UTC</div>
+                <div class="incident-action">Response team dispatched - ETA 18 minutes</div>
+              </div>
+            </div>
+            <div class="incident-step">
+              <div class="incident-icon responding">⚡</div>
+              <div class="incident-detail">
+                <div class="incident-time">14:25 UTC</div>
+                <div class="incident-action">3 trains rerouted, 14 customers notified</div>
+              </div>
+            </div>
+            <div class="incident-step">
+              <div class="incident-icon resolved">✓</div>
+              <div class="incident-detail">
+                <div class="incident-time">14:47 UTC</div>
+                <div class="incident-action">Track cleared - Operations resuming</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="use-case">
+        <h4>👥 Crew & Resource Optimization</h4>
+        <p><strong>Challenge:</strong> Complex crew scheduling across 23 states with Hours of Service regulations, qualification requirements, and dynamic operational needs.</p>
+        <p><strong>Solution:</strong> Claude optimizes crew assignments considering regulatory compliance, skill requirements, location, and operational priorities in real-time.</p>
+        <p><strong>Impact:</strong> 25% reduction in crew deadhead, improved compliance, enhanced crew satisfaction through better work-life balance.</p>
+
+        <div class="visual-mockup">
+          <div class="dashboard-header">
+            <div class="dashboard-title">Crew Schedule - Omaha Terminal</div>
+            <div class="dashboard-time">Next 12 Hours</div>
+          </div>
+          <div class="crew-schedule">
+            <div class="crew-row">
+              <div class="crew-name">Smith, J.</div>
+              <div class="crew-timeline">
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block rest">REST</div>
+                <div class="crew-block rest">REST</div>
+                <div class="crew-block rest">REST</div>
+              </div>
+            </div>
+            <div class="crew-row">
+              <div class="crew-name">Garcia, M.</div>
+              <div class="crew-timeline">
+                <div class="crew-block rest">REST</div>
+                <div class="crew-block rest">REST</div>
+                <div class="crew-block available">AVL</div>
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block transit">DH</div>
+              </div>
+            </div>
+            <div class="crew-row">
+              <div class="crew-name">Chen, L.</div>
+              <div class="crew-timeline">
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block transit">DH</div>
+                <div class="crew-block rest">REST</div>
+                <div class="crew-block rest">REST</div>
+                <div class="crew-block available">AVL</div>
+                <div class="crew-block available">AVL</div>
+              </div>
+            </div>
+            <div class="crew-row">
+              <div class="crew-name">Williams, T.</div>
+              <div class="crew-timeline">
+                <div class="crew-block available">AVL</div>
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block assigned">RUN</div>
+                <div class="crew-block rest">REST</div>
+                <div class="crew-block rest">REST</div>
+              </div>
+            </div>
+          </div>
+          <div class="schedule-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--primary);"></div>
+              <span>Assigned</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--accent);"></div>
+              <span>Deadhead</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #9e9e9e;"></div>
+              <span>Rest</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #4caf50;"></div>
+              <span>Available</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="use-case">
+        <h4>📞 Customer Service Intelligence</h4>
+        <p><strong>Challenge:</strong> 7,300 communities expect real-time shipment visibility, proactive communication, and rapid issue resolution.</p>
+        <p><strong>Solution:</strong> AI-powered customer service agents provide instant shipment tracking, delay predictions, and automated issue resolution 24/7.</p>
+        <p><strong>Impact:</strong> 70% reduction in customer service inquiries, improved customer satisfaction scores, 24/7 support availability.</p>
+
+        <div class="visual-mockup">
+          <div class="dashboard-header">
+            <div class="dashboard-title">AI Customer Service Portal</div>
+            <div class="dashboard-time">24/7 Support</div>
+          </div>
+          <div class="chat-interface">
+            <div class="chat-message customer">
+              <div class="chat-bubble">Where is my shipment #UP847234?</div>
+              <div class="chat-avatar">JD</div>
+            </div>
+            <div class="chat-message agent">
+              <div class="chat-avatar">AI</div>
+              <div class="chat-bubble">Your shipment is currently at Kansas City and will arrive at Los Angeles terminal on Oct 18 at 3:45 PM (on schedule).</div>
+            </div>
+            <div class="chat-message customer">
+              <div class="chat-bubble">Can you send me tracking updates?</div>
+              <div class="chat-avatar">JD</div>
+            </div>
+            <div class="chat-message agent">
+              <div class="chat-avatar">AI</div>
+              <div class="chat-bubble">Absolutely! I've enabled real-time updates via email and SMS. You'll receive notifications at each checkpoint. Is there anything else I can help with?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Interactive Demo: Predictive Maintenance Workflow</h2>
+    <p style="color: var(--text-medium); margin-bottom: 24px;">
+      Click each step to see how Claude processes real-time sensor data to prevent equipment failures:
+    </p>
+
+    <div class="interactive-flow">
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">1</span>
+        <div class="flow-step-content">
+          <strong>Data Collection & Integration</strong>
+          <p>Claude continuously ingests data from wayside detectors (hot bearing, dragging equipment, wheel impact), onboard locomotive sensors, maintenance records, and weather conditions across your 32,000-mile network.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">2</span>
+        <div class="flow-step-content">
+          <strong>Pattern Analysis & Anomaly Detection</strong>
+          <p>AI models analyze 35M+ daily sensor readings to identify subtle patterns indicating bearing wear, wheel defects, brake issues, or structural fatigue—often weeks before human-detectable symptoms appear.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">3</span>
+        <div class="flow-step-content">
+          <strong>Predictive Alerts & Prioritization</strong>
+          <p>When anomalies are detected, Claude assesses severity, failure probability, and operational impact to generate prioritized maintenance alerts with specific component recommendations and urgency levels.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">4</span>
+        <div class="flow-step-content">
+          <strong>Automated Work Order Generation</strong>
+          <p>High-priority issues automatically generate work orders in your maintenance system, including equipment location, failure prediction timeline, recommended parts, and suggested maintenance windows.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">5</span>
+        <div class="flow-step-content">
+          <strong>Continuous Learning & Optimization</strong>
+          <p>Claude learns from maintenance outcomes to improve prediction accuracy over time. Each repair validates or refines the model, creating a continuously improving system tailored to your fleet characteristics.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-box">
+      <h4>Integration with Union Pacific Systems</h4>
+      <p>Claude connects seamlessly to your existing infrastructure:</p>
+      <ul>
+        <li><strong>Transportation Management Systems (TMS):</strong> Real-time train location, routing, and schedule data</li>
+        <li><strong>Wayside Detector Networks:</strong> Hot bearing, dragging equipment, wheel impact load detection</li>
+        <li><strong>Maintenance Management:</strong> Work orders, parts inventory, maintenance history</li>
+        <li><strong>Customer Portals:</strong> Shipment tracking, notifications, service requests</li>
+        <li><strong>Safety Systems:</strong> PTC data, inspection records, incident reporting</li>
+      </ul>
+    </div>
+
+    <button class="cta-button" onclick="switchTab('claude-code')">Discover Claude Code for Development →</button>
+  </div>
+
+  <!-- Claude Code Tab -->
+  <div class="tab-content" id="claude-code">
+    <h1>Claude Code: AI-Powered Development for Union Pacific</h1>
+    <p style="font-size: 1.2em; color: var(--text-dark); margin-bottom: 48px;">
+      Accelerate software development for internal tools, integrations, and automation systems.
+      Claude Code helps your engineering teams build faster, maintain better, and innovate more.
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <span class="stat-number">40%</span>
+        <span class="stat-label">Faster Development Cycles</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">60%</span>
+        <span class="stat-label">Reduction in Code Review Time</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">75%</span>
+        <span class="stat-label">Fewer Production Bugs</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">90%</span>
+        <span class="stat-label">Test Coverage Improvement</span>
+      </div>
+    </div>
+
+    <h2>Key Capabilities for Rail Industry Development</h2>
+    <div class="use-case-grid">
+      <div class="use-case">
+        <h4>🔌 Legacy System Integration</h4>
+        <p>Build connectors and APIs to integrate decades-old mainframe systems with modern cloud platforms. Claude understands COBOL, legacy protocols, and modern REST APIs equally well.</p>
+      </div>
+
+      <div class="use-case">
+        <h4>📊 Data Pipeline Automation</h4>
+        <p>Create ETL pipelines to process sensor data, maintenance logs, and operational metrics. Transform raw data into actionable insights for decision-making.</p>
+      </div>
+
+      <div class="use-case">
+        <h4>🔍 Code Review & Security</h4>
+        <p>Automated security scanning, compliance verification, and code quality checks. Ensure all software meets FRA cybersecurity requirements and internal standards.</p>
+      </div>
+
+      <div class="use-case">
+        <h4>📱 Internal Tool Development</h4>
+        <p>Rapidly prototype and build custom dashboards, mobile apps for field operations, and automation tools for dispatchers and maintenance crews.</p>
+      </div>
+
+      <div class="use-case">
+        <h4>📚 Documentation Generation</h4>
+        <p>Automatically generate technical documentation, API references, and maintenance guides. Keep documentation current as systems evolve.</p>
+      </div>
+
+      <div class="use-case">
+        <h4>🐛 Debugging & Troubleshooting</h4>
+        <p>Quickly diagnose production issues, analyze log files, and recommend fixes. Claude understands complex system architectures and failure modes.</p>
+      </div>
+    </div>
+
+    <h2>Development Use Cases for Union Pacific</h2>
+
+    <div class="feature-box highlight">
+      <h4>🚂 Real-World Example: Wayside Detector Integration</h4>
+      <p><strong>Challenge:</strong> Integration of 1,000+ wayside detectors generating data in different formats across multiple vendors.</p>
+      <p><strong>Solution with Claude Code:</strong></p>
+      <ul>
+        <li>Generate data parsers for each detector vendor format (HBD, dragging equipment, wheel impact)</li>
+        <li>Build real-time streaming pipeline to normalize and route data to analytics platform</li>
+        <li>Create APIs for maintenance systems to consume alerts and recommendations</li>
+        <li>Implement automated testing for data quality and alert accuracy</li>
+      </ul>
+      <p><strong>Result:</strong> Delivered in 3 weeks vs. 6 months estimated with traditional development. 100% test coverage, zero production issues.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>🔧 Claude Code Features Your Teams Will Love</h4>
+      <ul>
+        <li><strong>Multi-File Editing:</strong> Refactor across dozens of files simultaneously while maintaining consistency</li>
+        <li><strong>Git Integration:</strong> Automatic commit message generation, PR creation, and branch management</li>
+        <li><strong>Context Awareness:</strong> 200K token window means Claude understands your entire codebase context</li>
+        <li><strong>Language Agnostic:</strong> Python, Java, JavaScript, C++, SQL, COBOL—Claude knows them all</li>
+        <li><strong>MCP Connectivity:</strong> Connect to internal databases, APIs, and systems for real-world testing</li>
+        <li><strong>Security First:</strong> Code never leaves your environment. SOC 2 Type II certified.</li>
+      </ul>
+    </div>
+
+    <h2>Development Workflow with Claude Code</h2>
+    <div class="interactive-flow">
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">1</span>
+        <div class="flow-step-content">
+          <strong>Describe What You Need</strong>
+          <p>"Create a Python service to parse hot bearing detector alerts and update our maintenance system"</p>
+        </div>
+      </div>
+
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">2</span>
+        <div class="flow-step-content">
+          <strong>Claude Generates Complete Implementation</strong>
+          <p>Scaffolds project structure, writes parsing logic, adds error handling, creates tests, generates documentation</p>
+        </div>
+      </div>
+
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">3</span>
+        <div class="flow-step-content">
+          <strong>Review & Iterate</strong>
+          <p>Request changes: "Add retry logic for API calls" or "Handle this edge case"—Claude updates instantly</p>
+        </div>
+      </div>
+
+      <div class="flow-step" onclick="highlightStep(this)">
+        <span class="flow-step-number">4</span>
+        <div class="flow-step-content">
+          <strong>Automated Testing & Deployment</strong>
+          <p>Claude generates comprehensive tests, creates CI/CD pipeline, and prepares deployment documentation</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta-button" onclick="switchTab('roi')">View ROI & Implementation Timeline →</button>
+  </div>
+
+  <!-- ROI & Timeline Tab -->
+  <div class="tab-content" id="roi">
+    <h1>ROI & Implementation Timeline</h1>
+    <p style="font-size: 1.2em; color: var(--text-dark); margin-bottom: 48px;">
+      A phased approach to AI transformation, delivering measurable value within 30 days and
+      achieving full-scale deployment across Union Pacific's network in 90 days.
+    </p>
+
+    <h2>Implementation Roadmap</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-marker">Phase 1<br>Days 1-30</div>
+        <div class="timeline-content">
+          <h3>Quick Wins & Foundation</h3>
+          <ul>
+            <li><strong>Week 1:</strong> Deploy customer service AI agent for top 3 inquiry types (shipment tracking, delay notifications, documentation requests)</li>
+            <li><strong>Week 2:</strong> Implement predictive maintenance pilot on high-value locomotive fleet (50 units)</li>
+            <li><strong>Week 3:</strong> Launch Claude Code for development team (20 developers)</li>
+            <li><strong>Week 4:</strong> Deploy automated safety inspection agent on pilot corridor (500 miles)</li>
+          </ul>
+          <p><strong>Expected Results:</strong> 30% reduction in customer service volume, first predictive maintenance alerts, 25% developer productivity improvement</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-marker">Phase 2<br>Days 31-60</div>
+        <div class="timeline-content">
+          <h3>Scale & Optimization</h3>
+          <ul>
+            <li><strong>Week 5-6:</strong> Expand predictive maintenance to full locomotive fleet and 10,000 railcars</li>
+            <li><strong>Week 6-7:</strong> Deploy route optimization agent across western region operations</li>
+            <li><strong>Week 7-8:</strong> Implement crew scheduling optimization for major terminals</li>
+            <li><strong>Week 8:</strong> Launch incident response coordination across network</li>
+          </ul>
+          <p><strong>Expected Results:</strong> $5M+ monthly cost savings, 15% improvement in network velocity, validated predictive maintenance ROI</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-marker">Phase 3<br>Days 61-90</div>
+        <div class="timeline-content">
+          <h3>Enterprise-Wide Deployment</h3>
+          <ul>
+            <li><strong>Week 9-10:</strong> Deploy all AI agents across entire 32,000-mile network</li>
+            <li><strong>Week 10-11:</strong> Integrate advanced analytics and continuous learning systems</li>
+            <li><strong>Week 11-12:</strong> Full stakeholder training and change management rollout</li>
+            <li><strong>Week 12:</strong> Performance optimization and future roadmap planning</li>
+          </ul>
+          <p><strong>Expected Results:</strong> $10M+ monthly run-rate savings, 99.99% operational reliability, full enterprise AI capability</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Financial Impact Projection</h2>
+    <div class="chart-container">
+      <h3>3-Year Cost Savings Forecast</h3>
+      <div class="chart-wrapper">
+        <canvas id="roiChart"></canvas>
+      </div>
+    </div>
+
+    <h2>Cost-Benefit Analysis</h2>
+    <div class="use-case-grid">
+      <div class="use-case">
+        <h4>💰 Annual Cost Savings</h4>
+        <p><strong>Maintenance Optimization:</strong> $50M<br>
+        <strong>Fuel Efficiency:</strong> $30M<br>
+        <strong>Crew Optimization:</strong> $20M<br>
+        <strong>Reduced Downtime:</strong> $15M<br>
+        <strong>Customer Service Automation:</strong> $5M</p>
+        <p style="margin-top: 16px; font-weight: 600; color: var(--primary);">Total Annual Savings: $120M+</p>
+      </div>
+
+      <div class="use-case">
+        <h4>📊 Implementation Investment</h4>
+        <p><strong>Year 1 Platform Costs:</strong> $8M<br>
+        <strong>Integration & Customization:</strong> $4M<br>
+        <strong>Training & Change Management:</strong> $2M<br>
+        <strong>Ongoing Support:</strong> $1M/year</p>
+        <p style="margin-top: 16px; font-weight: 600; color: var(--primary);">Total Year 1 Investment: $14M</p>
+        <p style="margin-top: 8px;"><strong>Payback Period: 6 weeks</strong></p>
+      </div>
+    </div>
+
+    <div class="feature-box highlight">
+      <h4>🎯 Key Performance Indicators</h4>
+      <p>Track success across critical operational metrics:</p>
+      <ul>
+        <li><strong>Maintenance Costs:</strong> 45% reduction in unplanned maintenance expenses</li>
+        <li><strong>Network Velocity:</strong> 12% improvement in average train speed</li>
+        <li><strong>Equipment Utilization:</strong> 20% increase in asset productivity</li>
+        <li><strong>Safety Performance:</strong> Maintain 99.99% derailment-free operation target</li>
+        <li><strong>Customer Satisfaction:</strong> 40% improvement in on-time performance</li>
+        <li><strong>Developer Productivity:</strong> 40% faster feature delivery cycles</li>
+        <li><strong>Fuel Efficiency:</strong> 8% reduction in fuel consumption per ton-mile</li>
+        <li><strong>Crew Utilization:</strong> 25% reduction in crew deadhead time</li>
+      </ul>
+    </div>
+
+    <h2>Risk Mitigation & Success Factors</h2>
+    <div class="use-case-grid">
+      <div class="use-case">
+        <h4>🛡️ De-Risking Strategy</h4>
+        <ul style="margin-left: 20px; margin-top: 12px;">
+          <li>Phased rollout with continuous validation</li>
+          <li>Pilot programs before full deployment</li>
+          <li>Human-in-the-loop for critical decisions</li>
+          <li>Comprehensive testing and validation protocols</li>
+          <li>Dedicated change management support</li>
+          <li>24/7 technical support during rollout</li>
+        </ul>
+      </div>
+
+      <div class="use-case">
+        <h4>✅ Success Requirements</h4>
+        <ul style="margin-left: 20px; margin-top: 12px;">
+          <li>Executive sponsorship and clear objectives</li>
+          <li>Cross-functional team engagement</li>
+          <li>Integration with existing systems</li>
+          <li>Data quality and availability</li>
+          <li>Employee training and adoption</li>
+          <li>Continuous measurement and optimization</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature-box">
+      <h4>🚀 Next Steps</h4>
+      <p style="margin-bottom: 16px;">Ready to transform Union Pacific's operations with AI?</p>
+      <ol style="margin-left: 24px; margin-top: 12px;">
+        <li style="margin-bottom: 8px; line-height: 1.8;"><strong>Discovery Workshop (Week 1):</strong> Assess current systems, identify priority use cases, define success metrics</li>
+        <li style="margin-bottom: 8px; line-height: 1.8;"><strong>Pilot Deployment (Weeks 2-4):</strong> Deploy first AI agents in controlled environment with measurable KPIs</li>
+        <li style="margin-bottom: 8px; line-height: 1.8;"><strong>Scale & Optimize (Weeks 5-12):</strong> Expand to full network based on pilot success</li>
+        <li style="margin-bottom: 8px; line-height: 1.8;"><strong>Continuous Innovation:</strong> Ongoing optimization and new capability deployment</li>
+      </ol>
+    </div>
+
+    <button class="cta-button" onclick="switchTab('overview')">← Back to Overview</button>
+  </div>
+
+  <script>
+    // Tab Navigation
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected tab
+      document.getElementById(tabName).classList.add('active');
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Event listeners for tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // Interactive flow step highlighting
+    function highlightStep(element) {
+      document.querySelectorAll('.flow-step').forEach(step => {
+        step.classList.remove('active');
+      });
+      element.classList.add('active');
+    }
+
+    // Get brand colors from CSS variables
+    const brandColors = {
+      primary: '#00339A',
+      secondary: '#CD0000',
+      accent: '#FDB913'
+    };
+
+    // Initialize ROI Chart
+    function initROIChart() {
+      const ctx = document.getElementById('roiChart');
+      if (!ctx) return;
+
+      new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['Current', '6 Months', '1 Year', '18 Months', '2 Years', '3 Years'],
+          datasets: [
+            {
+              label: 'Cumulative Cost Savings ($M)',
+              data: [0, 30, 75, 130, 200, 310],
+              borderColor: brandColors.primary,
+              backgroundColor: brandColors.primary + '20',
+              tension: 0.3,
+              borderWidth: 3,
+              pointRadius: 6,
+              pointBackgroundColor: brandColors.primary,
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+              fill: true
+            },
+            {
+              label: 'Investment Cost ($M)',
+              data: [0, 7, 14, 15, 16, 18],
+              borderColor: brandColors.secondary,
+              backgroundColor: brandColors.secondary + '20',
+              tension: 0.3,
+              borderWidth: 3,
+              pointRadius: 6,
+              pointBackgroundColor: brandColors.secondary,
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: {
+                  size: 14,
+                  weight: 600
+                },
+                padding: 20,
+                usePointStyle: true
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: 12,
+              titleFont: {
+                size: 14,
+                weight: 600
+              },
+              bodyFont: {
+                size: 13
+              },
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': $' + context.parsed.y + 'M';
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '$' + value + 'M';
+                },
+                font: {
+                  size: 12
+                }
+              },
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              }
+            },
+            x: {
+              ticks: {
+                font: {
+                  size: 12
+                }
+              },
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize chart when page loads
+    window.addEventListener('load', initROIChart);
+
+    // Re-initialize chart when ROI tab becomes visible
+    document.querySelector('[data-tab="roi"]').addEventListener('click', () => {
+      setTimeout(initROIChart, 100);
+    });
+  </script>
+</body>
+</html>
