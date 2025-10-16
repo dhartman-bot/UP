@@ -798,6 +798,284 @@
       50% { opacity: 0.5; box-shadow: 0 0 15px #4caf50; }
     }
 
+    .network-click-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.7em;
+      color: rgba(255, 255, 255, 0.8);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .network-map {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .network-map:hover {
+      transform: scale(1.01);
+    }
+
+    /* Full-Screen Network Modal */
+    .network-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      padding: 32px;
+      overflow: auto;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    .network-modal.active {
+      display: block;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 10000;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .fullscreen-network {
+      background: linear-gradient(135deg, #0a1929 0%, #1a237e 30%, #0d47a1 70%, #1a237e 100%);
+      border-radius: 12px;
+      position: relative;
+      height: calc(100vh - 200px);
+      min-height: 600px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .fullscreen-network::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(253, 185, 19, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 80% 30%, rgba(253, 185, 19, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(253, 185, 19, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 10% 70%, rgba(0, 51, 154, 0.1) 0%, transparent 30%);
+      pointer-events: none;
+    }
+
+    .modal-header {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      right: 80px;
+      z-index: 5;
+    }
+
+    .modal-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .modal-subtitle {
+      font-size: 0.9em;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .network-stats-panel {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      z-index: 5;
+    }
+
+    .stat-panel-item {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-panel-value {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .stat-panel-label {
+      font-size: 0.75em;
+      color: rgba(255, 255, 255, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .fullscreen-route-node {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(253, 185, 19, 0.3);
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+
+    .fullscreen-route-node:hover {
+      transform: scale(1.3);
+      z-index: 4;
+    }
+
+    .fullscreen-route-node.major {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      box-shadow: 0 0 25px rgba(253, 185, 19, 0.8), 0 0 40px rgba(253, 185, 19, 0.4);
+    }
+
+    .fullscreen-route-node::after {
+      content: attr(data-city);
+      position: absolute;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75em;
+      color: white;
+      white-space: nowrap;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .fullscreen-route-path {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg,
+        rgba(253, 185, 19, 0.2) 0%,
+        rgba(253, 185, 19, 0.5) 50%,
+        rgba(253, 185, 19, 0.2) 100%);
+      box-shadow: 0 0 10px rgba(253, 185, 19, 0.3);
+      transform-origin: left center;
+      z-index: 1;
+    }
+
+    .fullscreen-route-path.active {
+      background: linear-gradient(90deg,
+        rgba(253, 185, 19, 0.6) 0%,
+        var(--accent) 50%,
+        rgba(253, 185, 19, 0.6) 100%);
+      box-shadow: 0 0 15px var(--accent);
+      animation: pathPulse 2s ease-in-out infinite;
+      height: 4px;
+    }
+
+    .fullscreen-train {
+      position: absolute;
+      width: 36px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--accent) 0%, #ffa000 100%);
+      border-radius: 6px;
+      box-shadow: 0 0 20px var(--accent), 0 0 35px rgba(253, 185, 19, 0.5);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7em;
+      color: #0a1929;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .fullscreen-train:hover {
+      transform: scale(1.2);
+      z-index: 4;
+    }
+
+    .fullscreen-train::before {
+      content: '▶';
+      font-size: 0.8em;
+    }
+
+    .fullscreen-train::after {
+      content: attr(data-train);
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.65em;
+      color: white;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .fullscreen-train:hover::after {
+      opacity: 1;
+    }
+
+    @media (max-width: 1024px) {
+      .network-stats-panel {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .network-stats-panel {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .network-modal {
+        padding: 16px;
+      }
+
+      .modal-title {
+        font-size: 1.3em;
+      }
+    }
+
     /* Incident Response Visual */
     .incident-timeline {
       background: white;
@@ -1284,11 +1562,12 @@
             <div class="dashboard-title">Network Optimization - Western Region</div>
             <div class="dashboard-time">Real-time</div>
           </div>
-          <div class="network-map">
+          <div class="network-map" onclick="openNetworkModal()">
             <div class="network-overlay">
               <div class="status-dot"></div>
               <span>All Systems Optimal</span>
             </div>
+            <div class="network-click-hint">🔍 Click to view full Network Operations Center</div>
 
             <!-- Major terminals -->
             <div class="route-node major" style="left: 8%; top: 50%;" data-city="Omaha"></div>
@@ -1820,6 +2099,160 @@
     <button class="cta-button" onclick="switchTab('overview')">← Back to Overview</button>
   </div>
 
+  <!-- Full-Screen Network Operations Center Modal -->
+  <div class="network-modal" id="networkModal">
+    <div class="modal-close" onclick="closeNetworkModal()">×</div>
+
+    <div class="fullscreen-network">
+      <div class="modal-header">
+        <div class="modal-title">Union Pacific Network Operations Center</div>
+        <div class="modal-subtitle">Real-time AI-optimized routing across 32,000 miles • Western Region</div>
+      </div>
+
+      <!-- Major Terminals (8 key cities) -->
+      <div class="fullscreen-route-node major" style="left: 12%; top: 35%;" data-city="Omaha, NE"></div>
+      <div class="fullscreen-route-node major" style="left: 20%; top: 52%;" data-city="Kansas City, MO"></div>
+      <div class="fullscreen-route-node major" style="left: 42%; top: 25%;" data-city="Denver, CO"></div>
+      <div class="fullscreen-route-node major" style="left: 35%; top: 50%;" data-city="Pueblo, CO"></div>
+      <div class="fullscreen-route-node major" style="left: 52%; top: 72%;" data-city="El Paso, TX"></div>
+      <div class="fullscreen-route-node major" style="left: 45%; top: 85%;" data-city="Phoenix, AZ"></div>
+      <div class="fullscreen-route-node major" style="left: 75%; top: 65%;" data-city="Los Angeles, CA"></div>
+      <div class="fullscreen-route-node major" style="left: 68%; top: 32%;" data-city="Salt Lake City, UT"></div>
+
+      <!-- Secondary Terminals (12 intermediate cities) -->
+      <div class="fullscreen-route-node" style="left: 8%; top: 48%;" data-city="Council Bluffs"></div>
+      <div class="fullscreen-route-node" style="left: 28%; top: 40%;" data-city="Cheyenne"></div>
+      <div class="fullscreen-route-node" style="left: 48%; top: 15%;" data-city="Pocatello"></div>
+      <div class="fullscreen-route-node" style="left: 62%; top: 45%;" data-city="Las Vegas"></div>
+      <div class="fullscreen-route-node" style="left: 85%; top: 55%;" data-city="Long Beach"></div>
+      <div class="fullscreen-route-node" style="left: 58%; top: 82%;" data-city="Tucson"></div>
+      <div class="fullscreen-route-node" style="left: 32%; top: 68%;" data-city="Albuquerque"></div>
+      <div class="fullscreen-route-node" style="left: 18%; top: 38%;" data-city="North Platte"></div>
+      <div class="fullscreen-route-node" style="left: 78%; top: 42%;" data-city="Barstow"></div>
+      <div class="fullscreen-route-node" style="left: 55%; top: 22%;" data-city="Ogden"></div>
+      <div class="fullscreen-route-node" style="left: 38%; top: 35%;" data-city="Laramie"></div>
+      <div class="fullscreen-route-node" style="left: 25%; top: 62%;" data-city="Topeka"></div>
+
+      <!-- Primary Active Routes -->
+      <div class="fullscreen-route-path active" style="left: 12%; top: 35%; width: 320px; transform: rotate(-3deg);"></div>
+      <div class="fullscreen-route-path active" style="left: 42%; top: 25%; width: 380px; transform: rotate(18deg);"></div>
+      <div class="fullscreen-route-path active" style="left: 45%; top: 85%; width: 320px; transform: rotate(-10deg);"></div>
+      <div class="fullscreen-route-path active" style="left: 68%; top: 32%; width: 180px; transform: rotate(42deg);"></div>
+      <div class="fullscreen-route-path active" style="left: 35%; top: 50%; width: 220px; transform: rotate(25deg);"></div>
+
+      <!-- Secondary Routes -->
+      <div class="fullscreen-route-path" style="left: 12%; top: 35%; width: 140px; transform: rotate(12deg);"></div>
+      <div class="fullscreen-route-path" style="left: 20%; top: 52%; width: 180px; transform: rotate(-8deg);"></div>
+      <div class="fullscreen-route-path" style="left: 42%; top: 25%; width: 160px; transform: rotate(-15deg);"></div>
+      <div class="fullscreen-route-path" style="left: 52%; top: 72%; width: 140px; transform: rotate(22deg);"></div>
+      <div class="fullscreen-route-path" style="left: 62%; top: 45%; width: 200px; transform: rotate(28deg);"></div>
+      <div class="fullscreen-route-path" style="left: 75%; top: 65%; width: 120px; transform: rotate(-20deg);"></div>
+      <div class="fullscreen-route-path" style="left: 32%; top: 68%; width: 160px; transform: rotate(18deg);"></div>
+      <div class="fullscreen-route-path" style="left: 18%; top: 38%; width: 260px; transform: rotate(-5deg);"></div>
+      <div class="fullscreen-route-path" style="left: 28%; top: 40%; width: 120px; transform: rotate(25deg);"></div>
+      <div class="fullscreen-route-path" style="left: 55%; top: 22%; width: 140px; transform: rotate(15deg);"></div>
+
+      <!-- Animated Trains (10 visible trains) -->
+      <div class="fullscreen-train" data-train="UP-4872 | Intermodal | LA→Omaha" style="left: 45%; top: 40%; animation: fsTrainRoute1 12s ease-in-out infinite;"></div>
+      <div class="fullscreen-train" data-train="UP-7234 | Coal | Denver→KC" style="left: 30%; top: 32%; animation: fsTrainRoute2 10s ease-in-out infinite; animation-delay: 1s;"></div>
+      <div class="fullscreen-train" data-train="UP-5891 | Automotive | Phoenix→LA" style="left: 60%; top: 78%; animation: fsTrainRoute3 11s ease-in-out infinite; animation-delay: 2s;"></div>
+      <div class="fullscreen-train" data-train="UP-3421 | Grain | Omaha→El Paso" style="left: 18%; top: 42%; animation: fsTrainRoute4 13s ease-in-out infinite; animation-delay: 3s;"></div>
+      <div class="fullscreen-train" data-train="UP-9156 | Intermodal | SLC→LA" style="left: 70%; top: 38%; animation: fsTrainRoute5 9s ease-in-out infinite; animation-delay: 1.5s;"></div>
+      <div class="fullscreen-train" data-train="UP-6743 | Chemicals | LA→Denver" style="left: 72%; top: 60%; animation: fsTrainRoute6 14s ease-in-out infinite; animation-delay: 4s;"></div>
+      <div class="fullscreen-train" data-train="UP-2987 | Containers | El Paso→Phoenix" style="left: 48%; top: 76%; animation: fsTrainRoute7 8s ease-in-out infinite; animation-delay: 2.5s;"></div>
+      <div class="fullscreen-train" data-train="UP-8214 | Petroleum | Denver→Omaha" style="left: 38%; top: 28%; animation: fsTrainRoute8 10s ease-in-out infinite; animation-delay: 5s;"></div>
+      <div class="fullscreen-train" data-train="UP-1563 | Machinery | KC→Pueblo" style="left: 22%; top: 54%; animation: fsTrainRoute9 11s ease-in-out infinite; animation-delay: 3.5s;"></div>
+      <div class="fullscreen-train" data-train="UP-4029 | Intermodal | Omaha→LA" style="left: 14%; top: 38%; animation: fsTrainRoute10 16s ease-in-out infinite; animation-delay: 6s;"></div>
+
+      <!-- Stats Panel -->
+      <div class="network-stats-panel">
+        <div class="stat-panel-item">
+          <div class="stat-panel-value">47</div>
+          <div class="stat-panel-label">Active Trains</div>
+        </div>
+        <div class="stat-panel-item">
+          <div class="stat-panel-value">38.2</div>
+          <div class="stat-panel-label">Avg Speed (mph)</div>
+        </div>
+        <div class="stat-panel-item">
+          <div class="stat-panel-value">94%</div>
+          <div class="stat-panel-label">On-Time Rate</div>
+        </div>
+        <div class="stat-panel-item">
+          <div class="stat-panel-value">$2.4M</div>
+          <div class="stat-panel-label">Fuel Savings Today</div>
+        </div>
+        <div class="stat-panel-item">
+          <div class="stat-panel-value">12.3%</div>
+          <div class="stat-panel-label">Network Velocity ↑</div>
+        </div>
+        <div class="stat-panel-item">
+          <div class="stat-panel-value">99.99%</div>
+          <div class="stat-panel-label">Safety Score</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Train Route Animations for Full Screen */
+    @keyframes fsTrainRoute1 {
+      0% { left: 45%; top: 40%; }
+      25% { left: 58%; top: 48%; }
+      50% { left: 28%; top: 42%; }
+      75% { left: 15%; top: 38%; }
+      100% { left: 45%; top: 40%; }
+    }
+    @keyframes fsTrainRoute2 {
+      0% { left: 30%; top: 32%; }
+      50% { left: 18%; top: 48%; }
+      100% { left: 30%; top: 32%; }
+    }
+    @keyframes fsTrainRoute3 {
+      0% { left: 60%; top: 78%; }
+      50% { left: 78%; top: 62%; }
+      100% { left: 60%; top: 78%; }
+    }
+    @keyframes fsTrainRoute4 {
+      0% { left: 18%; top: 42%; }
+      33% { left: 32%; top: 52%; }
+      66% { left: 48%; top: 70%; }
+      100% { left: 18%; top: 42%; }
+    }
+    @keyframes fsTrainRoute5 {
+      0% { left: 70%; top: 38%; }
+      50% { left: 77%; top: 60%; }
+      100% { left: 70%; top: 38%; }
+    }
+    @keyframes fsTrainRoute6 {
+      0% { left: 72%; top: 60%; }
+      50% { left: 44%; top: 28%; }
+      100% { left: 72%; top: 60%; }
+    }
+    @keyframes fsTrainRoute7 {
+      0% { left: 48%; top: 76%; }
+      50% { left: 44%; top: 82%; }
+      100% { left: 48%; top: 76%; }
+    }
+    @keyframes fsTrainRoute8 {
+      0% { left: 38%; top: 28%; }
+      50% { left: 14%; top: 36%; }
+      100% { left: 38%; top: 28%; }
+    }
+    @keyframes fsTrainRoute9 {
+      0% { left: 22%; top: 54%; }
+      50% { left: 34%; top: 48%; }
+      100% { left: 22%; top: 54%; }
+    }
+    @keyframes fsTrainRoute10 {
+      0% { left: 14%; top: 38%; }
+      25% { left: 38%; top: 30%; }
+      50% { left: 65%; top: 35%; }
+      75% { left: 75%; top: 58%; }
+      100% { left: 14%; top: 38%; }
+    }
+  </style>
+
   <script>
     // Tab Navigation
     function switchTab(tabName) {
@@ -1851,6 +2284,31 @@
       });
       element.classList.add('active');
     }
+
+    // Network Modal Controls
+    function openNetworkModal() {
+      document.getElementById('networkModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeNetworkModal() {
+      document.getElementById('networkModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeNetworkModal();
+      }
+    });
+
+    // Close modal when clicking outside the network
+    document.getElementById('networkModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeNetworkModal();
+      }
+    });
 
     // Get brand colors from CSS variables
     const brandColors = {
